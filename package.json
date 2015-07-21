@@ -1,6 +1,6 @@
 {
     "name": "jasmine-http-server-spy",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Creates jasmine spy objects backed by a http server.",
     "main": "lib/jasmine-http-server-spy.js",
     "scripts": {

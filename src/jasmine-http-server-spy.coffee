@@ -18,16 +18,17 @@ class MockServer
 
         for route in @routes
             console.log 'Registering mock endpoint', JSON.stringify(route)
+            do (route) =>
+                @app[route.method] route.url, (req, res) =>
+                    processRequest = @httpSpy[route.handlerName]
+                    requestObject = getRequestObject req
+                    responseObject = processRequest requestObject
 
-            @app[route.method] route.url, (req, res) =>
-                processRequest = @httpSpy[route.handlerName]
-                requestObject = getRequestObject req
-                responseObject = processRequest requestObject
+                    console.log "Responding to request: #{route.method} #{req.originalUrl}",
+                    console.log "Request: \n\t" + JSON.stringify requestObject
+                    console.log "Response: \n\t" + JSON.stringify responseObject
 
-                console.log "Responding to request: #{route.method} #{req.originalUrl}",
-                    JSON.stringify requestObject
-
-                res.status(responseObject.code).send responseObject.body
+                    res.status(responseObject.code).send responseObject.body
 
     start: (@port, done) ->
         @setUpApplication()
@@ -47,15 +48,15 @@ class JasmineHttpServerSpy
         if not routes or routes.length is 0
             throw new Error("Routes list should be provided")
 
-        setUpSpies.call(this)
+        @setUpSpies()
         @server = new MockServer(routes, this)
 
-    setUpSpies = ->
+    setUpSpies: ->
         handlerNames = _.pluck routes, 'handlerName'
 
         # Default implementation to 404
         for handlerName in handlerNames
-            this[handlerName] = jasmine.createSpy "#{name}.#{handlerNames}"
+            this[handlerName] = jasmine.createSpy "#{name}.#{handlerName}"
             this[handlerName].and.returnValue
                 code: 404
                 body:

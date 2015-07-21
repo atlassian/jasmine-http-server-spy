@@ -40,7 +40,7 @@ describe 'mock server', ->
 
     describe 'with routes defined', ->
 
-        beforeAll (andDone) ->
+        beforeEach (andDone) ->
             @httpSpy = jasmineHttpServerSpy.createSpyObj('mockServer', [
                 {
                     method: 'post'
@@ -55,14 +55,12 @@ describe 'mock server', ->
             ])
             @httpSpy.server.start 8082, andDone
 
-        afterAll (andDone) ->
+        afterEach (andDone) ->
             @httpSpy.server.stop andDone
 
         beforeEach ->
             @httpSpy.postUsers.calls.reset()
             @httpSpy.getUsers.calls.reset()
-
-        #TODO            @httpSpy.server.reset() ?
 
         it 'should return 404 for undefined handlers', (done) ->
             makeRequest('http://localhost:8082/mockService/users')
