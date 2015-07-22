@@ -11,14 +11,19 @@ parseBodyAsJson = (responseAndBody) ->
     catch e
         return q.reject new Error('Unable to parse body as json. Body: ' + responseAndBody.body)
 
-makeRequest = (url, {body, headers}={}) ->
+makeRequest = (url, {body, headers, method}={}) ->
     deferred = q.defer()
 
+    contentType = if _.isObject body then 'application/json' else 'text/html'
+
+    if _.isObject body
+        body = JSON.stringify body
+
     requestOptions =
-        method: 'POST'
+        method: method or 'POST'
         url: url
-        body: body and JSON.stringify(body) or ''
-        headers: _.merge(headers or {}, 'content-type': 'application/json')
+        body: body or ''
+        headers: _.merge({}, headers, 'content-type': contentType)
 
     request requestOptions, (error, response, body) ->
         if error
@@ -135,3 +140,25 @@ describe 'mock server', ->
                 expect(@httpSpy.postUsers.calls.count()).toBe(5)
 
             .then done, done.fail
+
+        it 'should have query parameters in handler input', (done) ->
+            @httpSpy.getUsers.and.callFake (req) ->
+                expect(req.query.q).toBe "Peter Pen"
+                done()
+                return {code: 200}
+            makeRequest('http://localhost:8082/mockService/users?q=Peter Pen', method: 'GET').fail done.fail
+
+        it 'should have empty query parameters in handler input if no query parameters used', (done) ->
+            @httpSpy.getUsers.and.callFake (req) ->
+                expect(req.query).not.toBeUndefined()
+                expect(_.keys(req.query).length).toBe 0
+                done()
+                return {code: 200}
+            makeRequest('http://localhost:8082/mockService/users', method: 'GET').fail done.fail
+
+        it 'should have originalUrl in handler input', (done) ->
+            @httpSpy.getUsers.and.callFake (req) ->
+                expect(req.originalUrl).toBe '/mockService/users?something'
+                done()
+                return {code: 200}
+            makeRequest('http://localhost:8082/mockService/users?something', method: 'GET').fail done.fail

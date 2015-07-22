@@ -24,7 +24,7 @@ class MockServer
                     requestObject = getRequestObject req
                     responseObject = processRequest requestObject
 
-                    console.log "Responding to request: #{route.method} #{req.originalUrl}",
+                    console.log "Responding to request: #{route.method} #{req.originalUrl}"
                     console.log "Request: \n\t" + JSON.stringify requestObject
                     console.log "Response: \n\t" + JSON.stringify responseObject
 
