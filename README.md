@@ -100,3 +100,8 @@ Object containing all headers provided with request.
 An object containing properties mapped to the named route "parameters". 
 For example, if you have the route ```/user/:name```, then the "name" property is available as ```req.params.name```. 
 This object defaults to ```{}```.
+
+## Contribute
+
+Feel free to fork it here https://bitbucket.org/atlassian/jasmine-http-server-spy/fork and make a pull request. 
+ Issues and suggestions can be added here https://bitbucket.org/atlassian/jasmine-http-server-spy/issues
