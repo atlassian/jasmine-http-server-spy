@@ -162,3 +162,29 @@ describe 'mock server', ->
                 done()
                 return {code: 200}
             makeRequest('http://localhost:8082/mockService/users?something', method: 'GET').fail done.fail
+
+        expectCrossOriginResponseHeadersToBeReturned = (response) ->
+            expect(response.headers['access-control-allow-origin']).toBeDefined()
+            expect(response.headers['access-control-allow-origin']).toBe '*'
+            expect(response.headers['access-control-allow-headers']).toBeDefined()
+            expect(response.headers['access-control-allow-headers']).toBe 'Origin, X-Requested-With, Content-Type, Accept'
+
+        it 'should return cross origin response headers for get requests', (done) ->
+            @httpSpy.getUsers.and.returnValue
+                code: 200
+
+            makeRequest('http://localhost:8082/mockService/users', method: 'GET')
+                .then (result) ->
+                    expect(result.response.statusCode).toBe 200
+                    expectCrossOriginResponseHeadersToBeReturned result.response
+                .then done, done.fail
+
+        it 'should return cross origin response headers for post requests', (done) ->
+            @httpSpy.postUsers.and.returnValue
+                code: 200
+
+            makeRequest('http://localhost:8082/mockService/users', method: 'POST')
+                .then (result) ->
+                    expect(result.response.statusCode).toBe 200
+                    expectCrossOriginResponseHeadersToBeReturned result.response
+                .then done, done.fail
