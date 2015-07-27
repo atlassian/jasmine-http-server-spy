@@ -36,7 +36,7 @@ describe 'Test', ->
     it 'all the things', (done) ->
         # 1. Define what mock server would return
         @httpSpy.getSomeUrlToMock.and.returnValue 
-            status: 200
+            code: 200
             body: 
                 data: 10
         # 2. ... calls to main service that uses 'http://localhost:8082/some-url-to-mock'
@@ -54,12 +54,12 @@ describe 'Test', ->
 ### Handler's expected output
 
 Handler function result will end up in the http response mock server gives back. 
-You can define ```status``` and ```body``` at the moment:
+You can define ```code``` and ```body``` at the moment:
  
 ```coffee
-httpSpy.getSomeUrlToMock.and.returnValue {status: 200, body: {data: []}}
+httpSpy.getSomeUrlToMock.and.returnValue {code: 200, body: {data: []}}
 # or
-httpSpy.getSomeUrlToMock.and.returnValue {status: 401, body: {message: 'Please login first'}}
+httpSpy.getSomeUrlToMock.and.returnValue {code: 401, body: {message: 'Please login first'}}
 ```
 
 ### Handler's input
@@ -68,7 +68,7 @@ While handlers are jasmine spy objects, you can define a callback function to ma
 
 ```coffee
 httpSpy.getAnswerForANumber.and.callFake (req) ->
-    status: 200
+    code: 200
     body:
         if req.body.number is 42
             {answer: 'The answer to the ultimate question of life, the universe and everything'}
