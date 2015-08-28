@@ -12,41 +12,64 @@ $ npm install --save jasmine-http-server-spy
 
 ## Usage
 
-```coffee
-# Integration jasmine spec
-jasmineHttpServerSpy = require 'jasmine-http-server-spy'
+```javascript
+var jasmineHttpServerSpy = require('jasmine-http-server-spy');
 
-describe 'Test', ->
-    beforeAll (done) ->
-        @httpSpy = jasmineHttpServerSpy.createSpyObj('mockServer', [
-            {
-                method: 'get'
-                url: '/some-url-to-mock'
-                handlerName: 'getSomeUrlToMock'
-            }
-        ])
-        @httpSpy.server.start 8082, done
+describe('Test', function() {
+  beforeAll(function(done) {
+    this.httpSpy = jasmineHttpServerSpy.createSpyObj('mockServer', [
+      {
+        method: 'get',
+        url: '/some-url-to-mock',
+        handlerName: 'getSomeUrlToMock'
+      }
+    ]);
+    return this.httpSpy.server.start(8082, done);
+  });
+  
+  afterAll(function(done) {
+    this.httpSpy.server.stop(done);
+  });
+  
+  afterEach(function(done) {
+    this.httpSpy.getSomeUrlToMock.calls.reset();
+  });
+  
+  it('all the things', function() {
+    // 1. Define what mock server would return
+    this.httpSpy.getSomeUrlToMock.and.returnValue({
+      statusCode: 200,
+      body: {
+        data: 10
+      }
+    });
     
-    afterAll (done) ->
-        @httpSpy.server.stop done
-       
-    afterEach (done) ->
-        @httpSpy.getSomeUrlToMock.calls.reset()
-        
-    it 'all the things', (done) ->
-        # 1. Define what mock server would return
-        @httpSpy.getSomeUrlToMock.and.returnValue 
-            statusCode: 200
-            body: 
-                data: 10
-        # 2. ... calls to main service that uses 'http://localhost:8082/some-url-to-mock'
-        # 3. Assert mock server has been called as expected
-        expect(@httpSpy.getSomeUrlToMock).toHaveBeenCalled()
-        # or
-        expect(@httpSpy.getSomeUrlToMock).toHaveBeenCalledWith jasmine.objectContaining(
-            body: 
-                data: "something"
-        )
+    // 2. ... calls to main service that uses 'http://localhost:8082/some-url-to-mock'
+    
+    // 3. Assert mock server has been called as expected
+    expect(this.httpSpy.getSomeUrlToMock).toHaveBeenCalled();
+    
+    // or
+    expect(this.httpSpy.getSomeUrlToMock).toHaveBeenCalledWith(jasmine.objectContaining({
+      body: {
+        data: "something"
+      }
+    }));
+  });
+  
+  it('can accept promise as handler returnValue', function() {
+    var deferred = q.defer(); 
+    this.httpSpy.getSomeUrlToMock.and.returnValue(deferred.promise);
+    setTimeout(function(){
+        deferred.resolve({
+          statusCode: 200,
+           body: {
+             data: 10
+           }
+        });
+    });
+  });
+});
 ```
 
 ## API

@@ -67,6 +67,53 @@ describe 'mock server', ->
             @httpSpy.postUsers.calls.reset()
             @httpSpy.getUsers.calls.reset()
 
+        it 'should return 200 when has body only', (done) ->
+            @httpSpy.postUsers.and.returnValue
+                body:
+                    firstName: 'John'
+
+            makeRequest(
+                'http://localhost:8082/mockService/users',
+                body:
+                    property: 'anythingHere')
+            .then(parseBodyAsJson)
+            .then (result) ->
+                expect(result.response.statusCode).toBe 200
+            .then done, done.fail
+
+        it 'should return empty body when body is not defined', (done) ->
+            @httpSpy.postUsers.and.returnValue statusCode: 200
+
+            makeRequest(
+                'http://localhost:8082/mockService/users',
+                body:
+                    property: 'anythingHere')
+            .then(parseBodyAsJson)
+            .then (result) ->
+                expect(result.response.statusCode).toBe 200
+                expect(result.body).toEqual({})
+            .then done, done.fail
+
+        it 'should wait for promise to resolve', (done) ->
+            deferred = q.defer()
+            @httpSpy.postUsers.and.returnValue deferred.promise
+
+            makeRequest(
+                'http://localhost:8082/mockService/users',
+                body:
+                    property: 'anythingHere')
+            .then(parseBodyAsJson)
+            .then (result) ->
+                expect(result.response.statusCode).toBe 200
+                expect(result.body).toEqual firstName: 'John'
+            .then done, done.fail
+
+            deferred.resolve({
+                statusCode: 200,
+                body:
+                    firstName: 'John'
+            })
+
         it 'should return 404 for undefined handlers', (done) ->
             makeRequest('http://localhost:8082/mockService/users')
                 .then(parseBodyAsJson)

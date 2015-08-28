@@ -24,15 +24,27 @@ class MockServer
             console.log 'Registering mock endpoint', JSON.stringify(route)
             do (route) =>
                 @app[route.method] route.url, (req, res) =>
-                    processRequest = @httpSpy[route.handlerName]
+                    process = @httpSpy[route.handlerName]
                     requestObject = getRequestObject req
-                    responseObject = processRequest requestObject
+                    responseObject = process requestObject
 
-                    console.log "Responding to request: #{route.method} #{req.originalUrl}"
-                    console.log "Request: \n\t" + JSON.stringify requestObject
-                    console.log "Response: \n\t" + JSON.stringify responseObject
+                    resolveRequest = (responseObject) ->
+                        statusCode = responseObject.statusCode or 200
+                        body = responseObject.body or {}
 
-                    res.status(responseObject.statusCode).send responseObject.body
+                        console.log "Responding to request: #{route.method} #{req.originalUrl}"
+                        console.log "Request: \n\t" + JSON.stringify requestObject
+                        console.log "Response: \n\t" + JSON.stringify responseObject
+
+                        res.status(statusCode).send(body)
+
+                    if _.isFunction responseObject.then
+                        responseObject.then resolveRequest, (reason) ->
+                            console.error "Returned promise was rejected, do nothing"
+                            console.error "Rejection reason was:", reason
+                    else
+                        resolveRequest(responseObject)
+
 
     start: (@port, done) ->
         @setUpApplication()
