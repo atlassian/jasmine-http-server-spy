@@ -77,7 +77,7 @@ describe 'mock server', ->
 
         it 'should return registered output', (done) ->
             @httpSpy.postUsers.and.returnValue
-                code: 200
+                statusCode: 200
                 body:
                     firstName: 'John'
 
@@ -90,7 +90,7 @@ describe 'mock server', ->
 
         it 'should return different outputs when use call fake', (done) ->
             @httpSpy.postUsers.and.callFake (req) ->
-                code: 200
+                statusCode: 200
                 body:
                     users:
                         if _.isEqual(req.body, query: 'Jo*')
@@ -145,7 +145,7 @@ describe 'mock server', ->
             @httpSpy.getUsers.and.callFake (req) ->
                 expect(req.query.q).toBe "Peter Pen"
                 done()
-                return {code: 200}
+                return {statusCode: 200}
             makeRequest('http://localhost:8082/mockService/users?q=Peter Pen', method: 'GET').fail done.fail
 
         it 'should have empty query parameters in handler input if no query parameters used', (done) ->
@@ -153,14 +153,14 @@ describe 'mock server', ->
                 expect(req.query).not.toBeUndefined()
                 expect(_.keys(req.query).length).toBe 0
                 done()
-                return {code: 200}
+                return {statusCode: 200}
             makeRequest('http://localhost:8082/mockService/users', method: 'GET').fail done.fail
 
         it 'should have originalUrl in handler input', (done) ->
             @httpSpy.getUsers.and.callFake (req) ->
                 expect(req.originalUrl).toBe '/mockService/users?something'
                 done()
-                return {code: 200}
+                return {statusCode: 200}
             makeRequest('http://localhost:8082/mockService/users?something', method: 'GET').fail done.fail
 
         expectCrossOriginResponseHeadersToBeReturned = (response) ->
@@ -171,7 +171,7 @@ describe 'mock server', ->
 
         it 'should return cross origin response headers for get requests', (done) ->
             @httpSpy.getUsers.and.returnValue
-                code: 200
+                statusCode: 200
 
             makeRequest('http://localhost:8082/mockService/users', method: 'GET')
                 .then (result) ->
@@ -181,7 +181,7 @@ describe 'mock server', ->
 
         it 'should return cross origin response headers for post requests', (done) ->
             @httpSpy.postUsers.and.returnValue
-                code: 200
+                statusCode: 200
 
             makeRequest('http://localhost:8082/mockService/users', method: 'POST')
                 .then (result) ->

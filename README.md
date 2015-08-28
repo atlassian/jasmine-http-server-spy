@@ -36,7 +36,7 @@ describe 'Test', ->
     it 'all the things', (done) ->
         # 1. Define what mock server would return
         @httpSpy.getSomeUrlToMock.and.returnValue 
-            code: 200
+            statusCode: 200
             body: 
                 data: 10
         # 2. ... calls to main service that uses 'http://localhost:8082/some-url-to-mock'

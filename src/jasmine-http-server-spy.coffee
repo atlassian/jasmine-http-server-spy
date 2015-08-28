@@ -32,7 +32,7 @@ class MockServer
                     console.log "Request: \n\t" + JSON.stringify requestObject
                     console.log "Response: \n\t" + JSON.stringify responseObject
 
-                    res.status(responseObject.code).send responseObject.body
+                    res.status(responseObject.statusCode).send responseObject.body
 
     start: (@port, done) ->
         @setUpApplication()
@@ -62,7 +62,7 @@ class JasmineHttpServerSpy
         for handlerName in handlerNames
             this[handlerName] = jasmine.createSpy "#{name}.#{handlerName}"
             this[handlerName].and.returnValue
-                code: 404
+                statusCode: 404
                 body:
                     message: 'Page not found'
 
