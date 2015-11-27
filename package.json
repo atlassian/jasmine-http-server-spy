@@ -1,38 +1,46 @@
 {
-    "name": "jasmine-http-server-spy",
-    "version": "0.1.0",
-    "description": "Creates jasmine spy objects backed by a http server.",
-    "main": "lib/jasmine-http-server-spy.js",
-    "scripts": {
-        "test": "grunt",
-        "prepublish": "npm run compile",
-        "compile": "grunt compile"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://bitbucket.org/atlassian/jasmine-http-server-spy.git"
-    },
-    "bugs": {
-        "url" : "https://bitbucket.org/atlassian/jasmine-http-server-spy/issues"
-    },
-    "keywords": ["jasmine", "mock-server", "spy", "test", "integration"],
-    "author": "Aleksandr Motsjonov <amotsjonov@atlassian.com>",
-    "license": "Apache-2.0",
-    "devDependencies": {
-        "grunt": "^0.4.5",
-        "grunt-cli": "^0.1.13",
-        "grunt-contrib-clean": "^0.6.0",
-        "grunt-contrib-coffee": "^0.13.0",
-        "grunt-contrib-watch": "^0.6.1",
-        "jasmine": "^2.3.1",
-        "jasmine-reporters": "^2.0.7",
-        "load-grunt-tasks": "^3.2.0",
-        "request": "^2.59.0"
-    },
-    "dependencies": {
-        "body-parser": "^1.13.2",
-        "express": "^4.13.1",
-        "lodash": "^3.10.0",
-        "q": "^1.4.1"
-    }
+  "name": "jasmine-http-server-spy",
+  "version": "0.1.0",
+  "description": "Creates jasmine spy objects backed by a http server.",
+  "main": "lib/jasmine-http-server-spy.js",
+  "scripts": {
+    "test": "grunt",
+    "prepublish": "npm run compile",
+    "compile": "grunt compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/atlassian/jasmine-http-server-spy.git"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/atlassian/jasmine-http-server-spy/issues"
+  },
+  "keywords": [
+    "jasmine",
+    "mock-server",
+    "spy",
+    "test",
+    "integration"
+  ],
+  "author": "Aleksandr Motsjonov <amotsjonov@atlassian.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-shell": "^1.1.2",
+    "jasmine": "^2.3.1",
+    "jasmine-reporters": "^2.0.7",
+    "load-grunt-tasks": "^3.2.0",
+    "request": "^2.59.0",
+    "typescript": "^1.6.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.13.2",
+    "express": "^4.13.1",
+    "lodash": "^3.10.0",
+    "q": "^1.4.1"
+  }
 }

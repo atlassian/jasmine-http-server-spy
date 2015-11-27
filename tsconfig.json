@@ -1,0 +1,22 @@
+{
+    "compileOnSave": false,
+    "filesGlob": [
+        "test/**/*.ts",
+        "typings/tsd.d.ts",
+        "*.d.ts"
+    ],
+    "files": [
+        "test/tsDefinitionValidation.spec.ts",
+        "typings/tsd.d.ts",
+        "jasmine-http-server-spy.d.ts"
+    ],
+    "compilerOptions": {
+        "module": "commonjs",
+        "outDir": "build-output/test",
+        "noEmitOnError": true,
+        "target": "es5"
+    },
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}

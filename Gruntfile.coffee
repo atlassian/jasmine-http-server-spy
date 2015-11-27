@@ -10,13 +10,21 @@ module.exports = (grunt) ->
                 ext: '.js'
         clean:
             compiled:
-                src: 'lib/'
+                src: ['lib/', 'build-output']
+        shell:
+            tsc:
+                command: './node_modules/typescript/bin/tsc'
         jasmine:
             all:
                 options:
                     jasmineConfig:
                         'spec_dir': 'test'
                         'spec_files': [ '**/*.spec.coffee' ]
+            ts:
+                options:
+                    jasmineConfig:
+                        'spec_dir': 'build-output'
+                        'spec_files': ['test/*.spec.js']
         watch:
             options:
                 atBegin: true
@@ -28,4 +36,5 @@ module.exports = (grunt) ->
     require('./grunt/jasmine-runner')(grunt)
 
     grunt.registerTask 'compile', ['clean', 'coffee']
-    grunt.registerTask 'default', ['compile', 'jasmine']
+    grunt.registerTask 'tsDefinitionTest', ['shell:tsc', 'jasmine:ts']
+    grunt.registerTask 'default', ['compile', 'jasmine:all', 'tsDefinitionTest']
