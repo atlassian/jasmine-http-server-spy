@@ -1,0 +1,8 @@
+pipeline:
+    - job:
+        script:
+            - nvm install 0.10
+            - node --version
+            - npm install
+            - ./node_modules/.bin/tsd install
+            - npm test
