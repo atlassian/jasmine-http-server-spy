@@ -1,7 +1,0 @@
-image: node:0.10
-pipeline:
-    - job:
-        script:
-            - npm install
-            - ./node_modules/.bin/tsd install
-            - npm test
