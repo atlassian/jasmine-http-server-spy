@@ -9,21 +9,18 @@ parseBodyAsJson = (responseAndBody) ->
             response: responseAndBody.response
             body: JSON.parse responseAndBody.body)
     catch e
-        return q.reject new Error('Unable to parse body as json. Body: ' + responseAndBody.body)
+        return q.reject new Error('Unable to parse body as json. Body: ' + JSON.stringify(responseAndBody.body))
 
-makeRequest = (url, {body, headers, method}={}) ->
+makeRequest = (url, options={}) ->
     deferred = q.defer()
-
-    contentType = if _.isObject body then 'application/json' else 'text/html'
-
-    if _.isObject body
-        body = JSON.stringify body
-
-    requestOptions =
-        method: method or 'POST'
+    defaults =
+        method: 'POST'
+        headers:
+            'Content-Type': if _.isObject options.body then 'application/json' else 'text/html'
         url: url
-        body: body or ''
-        headers: _.merge({}, headers, 'content-type': contentType)
+
+    requestOptions = _.defaultsDeep({}, options, defaults)
+    requestOptions.body = JSON.stringify requestOptions.body if _.isObject options.body
 
     request requestOptions, (error, response, body) ->
         if error
@@ -133,6 +130,28 @@ describe 'mock server', ->
                 .then (result) ->
                     expect(result.response.statusCode).toBe 200
                     expect(result.body).toEqual firstName: 'John'
+                .then done, done.fail
+
+        it 'should parse post bodies encoded as json', (done) ->
+            body = property1: 'value1'
+            headers = 'Content-Type': 'application/json'
+            makeRequest('http://localhost:8082/mockService/users', {body: body, headers: headers})
+                .then (result) =>
+                    expect(@httpSpy.postUsers).toHaveBeenCalledWith(jasmine.objectContaining(
+                        body:
+                            property1: 'value1'
+                    ))
+                .then done, done.fail
+
+        it 'should parse post bodies encoded as x-www-form-urlencoded', (done) ->
+            form = property1: 'value1'
+            headers = 'Content-Type': 'application/x-www-form-urlencoded'
+            makeRequest('http://localhost:8082/mockService/users', {form: form, headers: headers})
+                .then (result) =>
+                    expect(@httpSpy.postUsers).toHaveBeenCalledWith(jasmine.objectContaining(
+                        body:
+                            property1: 'value1'
+                    ))
                 .then done, done.fail
 
         it 'should return different outputs when use call fake', (done) ->
