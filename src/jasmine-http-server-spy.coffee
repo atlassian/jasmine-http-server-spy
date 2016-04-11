@@ -2,6 +2,7 @@ express = require('express')
 q = require('q')
 _ = require('lodash')
 bodyParser = require('body-parser')
+debug = require('debug')('jasmine-http-spy')
 
 doneOrFail = (done, err) ->
     if err then done.fail(err) else done()
@@ -22,7 +23,7 @@ class MockServer
             next();
 
         for route in @routes
-            console.log 'Registering mock endpoint', JSON.stringify(route)
+            debug 'Registering mock endpoint', JSON.stringify(route)
             do (route) =>
                 @app[route.method] route.url, (req, res) =>
                     process = @httpSpy[route.handlerName]
@@ -33,9 +34,9 @@ class MockServer
                         statusCode = responseObject.statusCode or 200
                         body = responseObject.body or {}
 
-                        console.log "Responding to request: #{route.method} #{req.originalUrl}"
-                        console.log "Request: \n\t" + JSON.stringify requestObject
-                        console.log "Response: \n\t" + JSON.stringify responseObject
+                        debug "Responding to request: #{route.method} #{req.originalUrl}"
+                        debug "Request: \n\t" + JSON.stringify requestObject
+                        debug "Response: \n\t" + JSON.stringify responseObject
 
                         res.status(statusCode).send(body)
 
