@@ -254,3 +254,14 @@ describe 'mock server', ->
                     expect(result.response.statusCode).toBe 200
                     expectCrossOriginResponseHeadersToBeReturned result.response
                 .then done, done.fail
+
+        it 'should return response headers defined in mock return value', (done) ->
+            @httpSpy.getUsers.and.returnValue
+                statusCode: 200,
+                headers:
+                    'Content-Type': 'application/xml; charset=utf-8'
+
+            makeRequest('http://localhost:8082/mockService/users', method: 'GET')
+                .then (result) ->
+                    expect(result.response.headers['content-type']).toBe 'application/xml; charset=utf-8'
+                .then done, done.fail
