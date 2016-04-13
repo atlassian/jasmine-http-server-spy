@@ -77,11 +77,13 @@ describe('Test', function() {
 ### Handler's expected output
 
 Handler function result will end up in the http response mock server gives back. 
-You can define ```code``` and ```body``` at the moment:
+You can define ```code```, ```body``` and ```headers``` at the moment:
  
 ```coffee
 httpSpy.getSomeUrlToMock.and.returnValue {code: 200, body: {data: []}}
-# or
+
+httpSpy.getSomeUrlToMock.and.returnValue {code: 200, body: '<xml>...</xml>', headers: {'Content-Type' : 'application/xml'}}
+
 httpSpy.getSomeUrlToMock.and.returnValue {code: 401, body: {message: 'Please login first'}}
 ```
 

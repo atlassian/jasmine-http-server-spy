@@ -33,12 +33,13 @@ class MockServer
                     resolveRequest = (responseObject) ->
                         statusCode = responseObject.statusCode or 200
                         body = responseObject.body or {}
+                        headers = responseObject.headers or {}
 
                         debug "Responding to request: #{route.method} #{req.originalUrl}"
                         debug "Request: \n\t" + JSON.stringify requestObject
                         debug "Response: \n\t" + JSON.stringify responseObject
 
-                        res.status(statusCode).send(body)
+                        res.status(statusCode).set(headers).send(body)
 
                     if _.isFunction responseObject.then
                         responseObject.then resolveRequest, (reason) ->
