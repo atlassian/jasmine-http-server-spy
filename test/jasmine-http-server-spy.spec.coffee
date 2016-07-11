@@ -265,3 +265,28 @@ describe 'mock server', ->
                 .then (result) ->
                     expect(result.response.headers['content-type']).toBe 'application/xml; charset=utf-8'
                 .then done, done.fail
+
+
+    describe 'promises', ->
+
+        beforeEach (done) ->
+            @httpSpy = jasmineHttpServerSpy.createSpyObj('mockServer', [
+                {
+                    method: 'get'
+                    url: '/mockGet'
+                    handlerName: 'getHandler'
+                }
+            ])
+
+            @httpSpy.server.start(8082).then done, done.fail
+
+        afterEach (done) ->
+            @httpSpy.server.stop().then done, done.fail
+
+        it 'should start and stop the server with promises', (done) ->
+            @httpSpy.getHandler.and.returnValue statusCode: 200
+
+            makeRequest('http://localhost:8082/mockGet', method: 'GET')
+                .then (result) ->
+                    expect(result.response.statusCode).toBe 200
+                .then done, done.fail

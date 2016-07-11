@@ -49,12 +49,25 @@ class MockServer
                         resolveRequest(responseObject)
 
 
-    start: (@port, done) ->
+    start: (port, done) ->
         @setUpApplication()
-        @server = @app.listen @port, _.partial(doneOrFail, done)
+        @server = @app.listen port
+        if done
+            @server.on 'listening', _.partial(doneOrFail, done)
+        else
+            deferred = q.defer()
+            @server.on 'listening', (err) ->
+                if err
+                    deferred.reject(err)
+                else
+                    deferred.resolve()
+            return deferred.promise
 
     stop: (done) ->
-        @server.close _.partial(doneOrFail, done)
+        if done
+            @server.close _.partial(doneOrFail, done)
+        else
+            return q.ninvoke @server, 'close'
 
 
 class JasmineHttpServerSpy
