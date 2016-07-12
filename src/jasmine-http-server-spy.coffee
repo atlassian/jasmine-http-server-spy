@@ -6,14 +6,12 @@ debug = require('debug')('jasmine-http-spy')
 
 doneResolveHandler = (done) ->
     return (result) ->
-        if done
-            done()
+        done() if done
         return result
 
 doneRejectHandler = (done) ->
     return (err) ->
-        if done and done.fail
-            done.fail(err)
+        done.fail(err) if done and done.fail
         throw err
 
 getRequestObject = (req) ->
@@ -61,12 +59,13 @@ class MockServer
     start: (port, done) ->
         @setUpApplication()
         @server = @app.listen port
+
         deferred = q.defer()
-        @server.on 'listening', (err) ->
-            if err
-                deferred.reject(err)
-            else
-                deferred.resolve()
+        @server.on 'listening', () ->
+            deferred.resolve()
+        @server.on 'error', (err) ->
+            deferred.reject(err)
+
         return deferred.promise
             .then doneResolveHandler(done), doneRejectHandler(done)
 
