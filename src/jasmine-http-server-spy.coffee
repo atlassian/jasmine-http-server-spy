@@ -6,12 +6,12 @@ debug = require('debug')('jasmine-http-spy')
 
 doneResolveHandler = (done) ->
     return (result) ->
-        done() if done
+        done?()
         return result
 
 doneRejectHandler = (done) ->
     return (err) ->
-        done.fail(err) if done and done.fail
+        done?.fail?(err)
         throw err
 
 getRequestObject = (req) ->
