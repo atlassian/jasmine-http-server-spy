@@ -61,10 +61,8 @@ class MockServer
         @server = @app.listen port
 
         deferred = q.defer()
-        @server.on 'listening', () ->
-            deferred.resolve()
-        @server.on 'error', (err) ->
-            deferred.reject(err)
+        @server.on 'listening', deferred.resolve
+        @server.on 'error', deferred.reject
 
         return deferred.promise
             .then doneResolveHandler(done), doneRejectHandler(done)
