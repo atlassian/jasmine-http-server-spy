@@ -24,14 +24,14 @@ describe('Test', function() {
         handlerName: 'getSomeUrlToMock'
       }
     ]);
-    return this.httpSpy.server.start(8082, done);
+    this.httpSpy.server.start(8082).then(done, done.fail);
   });
   
   afterAll(function(done) {
-    this.httpSpy.server.stop(done);
+    this.httpSpy.server.stop().then(done, done.fail);
   });
   
-  afterEach(function(done) {
+  afterEach(function() {
     this.httpSpy.getSomeUrlToMock.calls.reset();
   });
   
