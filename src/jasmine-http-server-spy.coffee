@@ -4,8 +4,17 @@ _ = require('lodash')
 bodyParser = require('body-parser')
 debug = require('debug')('jasmine-http-spy')
 
-doneOrFail = (done, err) ->
-    if err then done.fail(err) else done()
+doneResolveHandler = (done) ->
+    return (result) ->
+        if done
+            done()
+        return result
+
+doneRejectHandler = (done) ->
+    return (err) ->
+        if done and done.fail
+            done.fail(err)
+        throw err
 
 getRequestObject = (req) ->
     _.pick req, 'params', 'query', 'body', 'headers', 'originalUrl'
@@ -52,22 +61,18 @@ class MockServer
     start: (port, done) ->
         @setUpApplication()
         @server = @app.listen port
-        if done
-            @server.on 'listening', _.partial(doneOrFail, done)
-        else
-            deferred = q.defer()
-            @server.on 'listening', (err) ->
-                if err
-                    deferred.reject(err)
-                else
-                    deferred.resolve()
-            return deferred.promise
+        deferred = q.defer()
+        @server.on 'listening', (err) ->
+            if err
+                deferred.reject(err)
+            else
+                deferred.resolve()
+        return deferred.promise
+            .then doneResolveHandler(done), doneRejectHandler(done)
 
     stop: (done) ->
-        if done
-            @server.close _.partial(doneOrFail, done)
-        else
-            return q.ninvoke @server, 'close'
+        return q.ninvoke(@server, 'close')
+            .then doneResolveHandler(done), doneRejectHandler(done)
 
 
 class JasmineHttpServerSpy
