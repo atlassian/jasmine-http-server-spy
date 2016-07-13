@@ -265,3 +265,52 @@ describe 'mock server', ->
                 .then (result) ->
                     expect(result.response.headers['content-type']).toBe 'application/xml; charset=utf-8'
                 .then done, done.fail
+
+        it 'should call done.fail if starting the server fails', (done) ->
+            failSpy = jasmineHttpServerSpy.createSpyObj('mockServerOnSamePort', [
+                {
+                    method: 'get'
+                    url: '/mockGet'
+                    handlerName: 'getHandler'
+                }
+            ])
+
+            mockDone = () -> done.fail('Expected call to mockDone.fail!')
+            mockDone.fail = () -> done()
+
+            failSpy.server.start(8082, mockDone)
+
+    describe 'using promises', ->
+
+        beforeEach (done) ->
+            @httpSpy = jasmineHttpServerSpy.createSpyObj('mockServer', [
+                {
+                    method: 'get'
+                    url: '/mockGet'
+                    handlerName: 'getHandler'
+                }
+            ])
+
+            @httpSpy.server.start(8082).then done, done.fail
+
+        afterEach (done) ->
+            @httpSpy.server.stop().then done, done.fail
+
+        it 'should start and stop the server', (done) ->
+            @httpSpy.getHandler.and.returnValue statusCode: 200
+
+            makeRequest('http://localhost:8082/mockGet', method: 'GET')
+                .then (result) ->
+                    expect(result.response.statusCode).toBe 200
+                .then done, done.fail
+
+        it 'should reject the promise if starting the server fails', (done) ->
+            failSpy = jasmineHttpServerSpy.createSpyObj('mockServerOnSamePort', [
+                {
+                    method: 'get'
+                    url: '/mockGet'
+                    handlerName: 'getHandler'
+                }
+            ])
+
+            failSpy.server.start(8082).then done.fail, done

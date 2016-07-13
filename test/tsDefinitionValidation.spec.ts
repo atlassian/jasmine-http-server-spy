@@ -4,6 +4,7 @@ let jasmineHttpSpy: typeof jasmineHttpSpyType = require('../../lib/jasmine-http-
 
 describe('TS type definition smoke test', () => {
     let httpSpy;
+
     beforeEach((done) => {
         httpSpy = jasmineHttpSpy.createSpyObj('mockServer', [
             {
@@ -12,8 +13,13 @@ describe('TS type definition smoke test', () => {
                 handlerName: 'getHandler'
             }
         ]);
-        httpSpy.server.start(8082, done);
+        httpSpy.server.start(8082).then(done, done.fail);
     });
+
+    afterEach((done) => {
+        httpSpy.server.stop().then(done, done.fail);
+    });
+
     it('should execute basic test using type script definition', (done) => {
         httpSpy.getHandler.and.returnValue({
             body: 'body',
