@@ -130,6 +130,12 @@ An object containing properties mapped to the named route "parameters".
 For example, if you have the route ```/user/:name```, then the "name" property is available as ```req.params.name```. 
 This object defaults to ```{}```.
 
+## Changelog
+
+### 0.3.0
+
+`start` and `stop` function return promise now. Use of jasmine `done` callback is now optional.
+
 ## Contribute
 
 Feel free to fork it here https://bitbucket.org/atlassian/jasmine-http-server-spy/fork and make a pull request. 
