@@ -280,7 +280,7 @@ describe 'mock server', ->
 
             failSpy.server.start(8082, mockDone)
 
-    describe 'promises', ->
+    describe 'using promises', ->
 
         beforeEach (done) ->
             @httpSpy = jasmineHttpServerSpy.createSpyObj('mockServer', [
@@ -296,7 +296,7 @@ describe 'mock server', ->
         afterEach (done) ->
             @httpSpy.server.stop().then done, done.fail
 
-        it 'should start and stop the server with promises', (done) ->
+        it 'should start and stop the server', (done) ->
             @httpSpy.getHandler.and.returnValue statusCode: 200
 
             makeRequest('http://localhost:8082/mockGet', method: 'GET')

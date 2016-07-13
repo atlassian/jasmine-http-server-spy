@@ -57,9 +57,6 @@ class MockServer
 
 
     start: (port, done) ->
-        if done
-            console.warn('jasmine-http-server-spy: deprecated used of callbacks. ' +
-                'You should use the promise returned by server.start() and server.stop()')
         @setUpApplication()
         @server = @app.listen port
 

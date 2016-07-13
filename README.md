@@ -10,7 +10,9 @@ makes real http requests to a server, where the server is controlled via the fam
 $ npm install --save jasmine-http-server-spy
 ```
 
-## Usage
+## API
+
+### Server API by example
 
 ```javascript
 var jasmineHttpServerSpy = require('jasmine-http-server-spy');
@@ -24,11 +26,15 @@ describe('Test', function() {
         handlerName: 'getSomeUrlToMock'
       }
     ]);
-    this.httpSpy.server.start(8082).then(done, done.fail);
+    this.httpSpy.server.start(8082, done);
+    // you can pass jasmine 'done' function as a callback, or use returned promise
+    // this.httpSpy.server.start(8082).then(done, done.fail);
   });
   
   afterAll(function(done) {
-    this.httpSpy.server.stop().then(done, done.fail);
+    this.httpSpy.server.stop(done)
+    // you can pass jasmine 'done' function as a callback, or use returned promise:
+    // this.httpSpy.server.stop().then(done, done.fail);
   });
   
   afterEach(function() {
@@ -71,8 +77,6 @@ describe('Test', function() {
   });
 });
 ```
-
-## API
 
 ### Handler's expected output
 
