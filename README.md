@@ -29,6 +29,9 @@ describe('Test', function() {
     this.httpSpy.server.start(8082, done);
     // you can pass jasmine 'done' function as a callback, or use returned promise
     // this.httpSpy.server.start(8082).then(done, done.fail);
+    // you can also specify the hostname to start the server on:
+    // this.httpSpy.server.start(8082, '127.0.0.1').then(done, done.fail);
+    // this is useful if you need to test multiple servers listening on the same port
   });
   
   afterAll(function(done) {

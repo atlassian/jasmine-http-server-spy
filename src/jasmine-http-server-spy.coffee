@@ -56,9 +56,14 @@ class MockServer
                         resolveRequest(responseObject)
 
 
-    start: (port, done) ->
+    start: (args...) ->
         @setUpApplication()
-        @server = @app.listen port
+        if args.length is 2 and typeof(args[0]) is 'number' && typeof(args[1]) is 'function'
+            @server = @app.listen args[0]
+            done = args[1]
+        else
+            @server = @app.listen args...
+            done = null
 
         deferred = q.defer()
         @server.on 'listening', deferred.resolve
