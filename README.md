@@ -135,6 +135,10 @@ This object defaults to ```{}```.
 
 ## Changelog
 
+### 0.3.1
+   
+`start` now accepts hostname as optional second parameter `start(8082, '127.0.0.1')`
+
 ### 0.3.0
 
 `start` and `stop` function return promise now. Use of jasmine `done` callback is now optional.
