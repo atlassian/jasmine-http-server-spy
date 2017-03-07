@@ -314,3 +314,27 @@ describe 'mock server', ->
             ])
 
             failSpy.server.start(8082).then done.fail, done
+
+    describe 'http-server-spy with hostname', ->
+
+        beforeEach (done) ->
+            @httpSpy = jasmineHttpServerSpy.createSpyObj('mockServer', [
+                {
+                    method: 'get',
+                    url: '/mockGet',
+                    handlerName: 'getHandler'
+                }
+            ])
+
+            @httpSpy.server.start(8082, '127.0.0.1').then done, done.fail
+
+        afterEach (done) ->
+            @httpSpy.server.stop().then done, done.fail
+
+        it 'should start and stop the server', (done) ->
+            @httpSpy.getHandler.and.returnValue statusCode: 200
+
+            makeRequest('http://127.0.0.1:8082/mockGet', method: 'GET')
+                .then (result) ->
+                    expect(result.response.statusCode).toBe 200
+                .then done, done.fail
