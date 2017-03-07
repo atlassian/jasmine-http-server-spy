@@ -1,4 +1,4 @@
-# jasmine-http-server-spy [![Build Status](https://drone.io/bitbucket.org/atlassian/jasmine-http-server-spy/status.png)](https://drone.io/bitbucket.org/atlassian/jasmine-http-server-spy/latest)
+# jasmine-http-server-spy
 
 > Creates jasmine spy objects backed by a http server. Designed to help you write integration tests where your code 
 makes real http requests to a server, where the server is controlled via the familiar jasmine spy api.
